@@ -1,28 +1,54 @@
-# Automate sandboxed mirror sync
-# Inspire by: https://github.com/Bioconductor/BiocGithubHelp/wiki/Managing-your-Bioc-code-on-hedgehog-and-github
+# Configure a local working copy and add SVN branches
 
-# Clone from GitHub
-  $ git clone https://github.com/tharen/open-fvs-mirror
-#  $ git clone --depth 50 https://github.com/tharen/open-fvs-mirror open-fvs-mirror2
-  $ cd open-fvs-mirror
+Clone the Git repository
 
-# Checkout trunk in case it's no longer the default
-  $ git checkout trunk
+    git clone https://github.com/tharen/open-fvs-mirror
+    cd open-fvs-mirror
+    git checkout trunk
 
-# # Initialize just trunk from the Sourceforge SVN repository
-#  $ git svn init https://svn.code.sf.net/p/open-fvs/code/trunk
-#  $ git update-ref refs/remotes/git-svn refs/remotes/origin/trunk
+Add the sourceforge svn-remote
 
-# Use this method to facilitate additional branches
-  $ git config --add svn-remote.sourceforge.url https://svn.code.sf.net/p/open-fvs/code
-  $ git config --add svn-remote.sourceforge.fetch trunk:refs/remotes/sourceforge/trunk
+    git config --add svn-remote.sourceforge.url https://svn.code.sf.net/p/open-fvs/code
 
-# Point the svn trunk to the git trunk branch
-  $ git update-ref refs/remotes/sourceforge/trunk refs/remotes/origin/trunk
+Add trunk and specific branches as fetch targets
 
-# Pull in any changes from SourceForge
-# This will probably trigger rebuilding the rev map
-  $ git svn rebase
+    git config --add svn-remote.sourceforge.fetch trunk:refs/remotes/sourceforge/trunk
+    git config --add svn-remote.sourceforge.fetch branches/FMSCdev:refs/remotes/sourceforge/FMSCdev
 
-# Push the SVN changes up to GitHub
-  $ git push origin trunk
+Alternate formats to include all or specific branches (replace branches with tags, etc.)
+
+    git config --add svn-remote.sourceforge.branches branches/*:refs/remotes/sourceforge/*
+    git config --add svn-remote.sourceforge.branches branches/{FMSCdev,FMSCrelease}:refs/remotes/sourceforge/*
+
+Fetch SVN commits that are not currently in the repository. This pull commits for the configured fetch targets, branches, and tags.
+
+    git svn fetch sourceforge
+    
+If this fails for a specific branch it may be possible to checkout and rebase to recent commit.
+
+    git checkout -b FMSCrelease sourceforge/FMSCrelease
+    git svn rebase --revision 2200:HEAD
+
+Any newly configured SVN branches need to be checked out and pushed to the Git remote
+    
+    git checkout -b FMSCdev sourceforge/FMSCdev
+    git push --set-upstream origin FMSCdev
+
+FIXME: Not sure this is necessary, or helpful
+
+    git update-ref refs/remotes/sourceforge/trunk refs/remotes/origin/trunk
+    git update-ref refs/remotes/sourceforge/FMSCdev refs/remotes/origin/FMSCdev
+    git update-ref refs/remotes/sourceforge/FMSCrelease refs/remotes/origin/FMSCrelease
+
+### AppVeyor Nightly Builds
+
+Nightly builds on [AppVeyor][2] are triggered using the [cron-job.org][1] service.
+
+[1]: https://cron-job.org/en/members/jobs/
+[2]: https://ci.appveyor.com/project/tharen/open-fvs-mirror/history
+    
+One off build
+
+    curl -d "{""accountName"": ""tharen"", ""projectSlug"": ""open-fvs-mirror"", ""branch"": ""FMSCrelease""}" -H "Content-Type: application/json" -H "Authorization: Bearer qbhq158xlc1sjbnvsoot" -X POST https://ci.appveyor.com/api/builds
+    
+    
