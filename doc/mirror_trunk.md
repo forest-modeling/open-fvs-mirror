@@ -32,6 +32,7 @@ If this fails for a specific branch it may be possible to checkout and rebase to
 Any newly configured SVN branches need to be checked out and pushed to the Git remote
     
     git checkout -b FMSCdev sourceforge/FMSCdev
+    git svn rebase
     git push --set-upstream origin FMSCdev
 
 FIXME: Not sure this is necessary, or helpful
