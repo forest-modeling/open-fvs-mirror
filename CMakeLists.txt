@@ -1,9 +1,55 @@
-## CMake build originated by: NCrookston July 24 2012
+# Build Open-FVS using CMake
+# Original configuration by: NCrookston July 24 2012
+#
+# Open-FVS project level CMake file
+# FVS variants are built in individual subdirectories
+#   CMakeLists.txt files are generated for each variant
+#   CMakeLists.txt.in is the variant template
+#
+# Targets:
+#   Variant Targets: <var> (e.g. ie)
+#     FVS<var> - FVS executable binary
+#     libfvs<var> - FVS shared library (*.dll,*.so)
+#     libfvs<var>_static - FVS static library (*.a)
+#     <var> - Build all variant binaries
+# Global:
+#    all - Build all configured variants
+#    zip - Archive the results of "all" in a zip file
+#
+# A subset of available FVS variants can be built
+#   by populating the FVS_VARIANT environment variable
+#   
+# Parallel build are executed simultaneously for all configured variants
+# 
+# CMake features and options should work as documented
+#    https://cmake.org/cmake/help/latest/
+# Common build systems should work MinGW Makefiles, Unix Makefiles, Ninja, etc.
+# C, C++, Fortran compilers should be in the environment PATH
+#   Compilers can be specified using environment variables CC, CXX, FC, etc.
+#
+# Example Usage:
+#   Basic debug build:
+#   $ mkdir build
+#   $ cd build
+#   $ set FVS_VARIANTS=pn,wc
+#   $ cmake -G "MinGW Makefiles" ..
+#   $ cmake --build .
+#
+#   Ninja release build:
+#   $ mkdir build
+#   $ cd build
+#	$ cmake -S .. -B release -G "Ninja" -DFVS_VARIANTS=pn,wc,so -DCMAKE_BUILD_TYPE=Release
+#   $ cmake --build release -j14
+#   $ cmake --build release --target zip
+#
+# Run incremental builds by calling cmake --build <dir>
+#   Most build systems will restrict builds to modified files 
 
 cmake_minimum_required (VERSION 3.12)
 
-enable_language(Fortran)
-project(Open-FVS)
+project(Open-FVS
+	LANGUAGES Fortran C CXX
+	)
 
 # Default variable values which can be set on the command line
 set(FVS_VARIANTS "pn,wc" CACHE STRING "FVS variants to configure, eg. pnc,wcc,oc,op")
@@ -13,7 +59,15 @@ string(TOLOWER ${FVS_VARIANTS} FVS_VARIANTS)
 string(REPLACE "," ";" FVS_VARIANTS "${FVS_VARIANTS}")
 string(REPLACE " " ";" FVS_VARIANTS "${FVS_VARIANTS}")
 
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Configure FVS Variants: ${FVS_VARIANTS}")
+
+# Save all outputs to a common location
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Open-FVS/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Open-FVS/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/Open-FVS/bin)
+
+set(all_targets "")
 
 foreach (variant ${FVS_VARIANTS})
 
@@ -25,36 +79,40 @@ foreach (variant ${FVS_VARIANTS})
 	file(STRINGS "${slfn}"  source_files  NEWLINE_CONSUME)
 	
 	string(REPLACE "../" "${CMAKE_CURRENT_LIST_DIR}/" source_files ${source_files})
-	
+
+	# Setup the variant target subdirectory
 	set(target_folder "${PROJECT_BINARY_DIR}/${target_name}")
-	# Ensure the build folder is clean
 	file(MAKE_DIRECTORY ${target_folder})
-	# file(REMOVE ${target_folder}/CMakeLists.txt)
-	# file(REMOVE ${target_folder}/CMakeCache.txt)
-	# file(REMOVE ${target_folder}/sourcelist.txt)
-	# file(REMOVE_RECURSE ${target_folder}/CMakeFiles)
-	file(REMOVE_RECURSE ${target_folder})
-	
-	# Write the variant configuration files
 	file(WRITE ${target_folder}/sourcelist.txt ${source_files})
-	# message(${source_files})
-	# message("Source list: ${target_name}/sourcelist.txt")
-	
-	set(header_message "**** DO NOT EDIT - This is an auto-generated file")
 	
 	# Perform variable substitution on the variant CMakeLists.txt
-	# message("CmakeLists.txt: ${target_name}/CMakeLists.txt")
+	set(header_message "**** DO NOT EDIT - This is an auto-generated file")
 	configure_file(
 		CMakeLists.txt.in
 		${target_folder}/CMakeLists.txt
-		@ONLY
+		@ONLY # replace strings with the form @VAR@, but not ${VAR}
 		)
 	
 	message(STATUS "Configure subdirectory: ${target_folder}")
 	add_subdirectory(${target_folder})
 	
-	add_custom_target(${variant} ALL DEPENDS lib${target_name} ${target_name} lib${target_name}_static)
+	# Custom target for all components of the variant
+	set(variant_targets ${target_name} lib${target_name} lib${target_name}_static)
+	add_custom_target(${variant} ALL DEPENDS ${variant_targets})
+	
+	# Add the variant components to the global target list
+	list(APPEND all_targets ${variant_targets})
 
 endforeach(variant)
 
-return()
+# Add a target for zipping the outputs
+# NOTE: ARCHIVE_NAME should be defined externally by the build platform
+#       It should consist of the revision number, system_name, etc.
+if(NOT DEFINED ENV{ARCHIVE_NAME})
+	set(ARCHIVE_NAME "open-fvs")
+endif()
+add_custom_target(zip
+		DEPENDS ${all_targets}
+		COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${ARCHIVE_NAME}.zip" --format=zip
+			"${PROJECT_BINARY_DIR}/Open-FVS"
+		)

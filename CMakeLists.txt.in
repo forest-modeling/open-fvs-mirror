@@ -2,8 +2,9 @@
 
 cmake_minimum_required (VERSION 3.12)
 
-enable_language(Fortran)
-project(@target_name@)
+project(@target_name@
+	LANGUAGES Fortran C CXX
+	)
 
 set(variant_name @target_name@)
 set(varName @variant@)
