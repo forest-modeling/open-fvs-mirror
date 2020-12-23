@@ -89,7 +89,6 @@ add_library(OBJS_${variant_name} OBJECT ${fvs_src})
 add_library(lib${variant_name} SHARED $<TARGET_OBJECTS:OBJS_${variant_name}>)
 add_library(lib${variant_name}_static STATIC $<TARGET_OBJECTS:OBJS_${variant_name}>)
 
-add_executable (${variant_name} ${main_src})
 add_executable (${variant_name} ${main_src} $<TARGET_OBJECTS:OBJS_${variant_name}>)
 # target_link_libraries(${variant_name} lib${variant_name}_static)
 # target_link_libraries(${variant_name} lib${variant_name})
