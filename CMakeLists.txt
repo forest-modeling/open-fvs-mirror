@@ -108,11 +108,12 @@ endforeach(variant)
 # Add a target for zipping the outputs
 # NOTE: ARCHIVE_NAME should be defined externally by the build platform
 #       It should consist of the revision number, system_name, etc.
-if(NOT DEFINED ENV{ARCHIVE_NAME})
-	set(ARCHIVE_NAME "open-fvs")
-endif()
+if (NOT DEFINED ENV{ARCHIVE_NAME})
+	set(ENV{ARCHIVE_NAME} "open-fvs")
+endif ()
+
 add_custom_target(zip
 		DEPENDS ${all_targets}
-		COMMAND ${CMAKE_COMMAND} -E tar "cfv" "${ARCHIVE_NAME}.zip" --format=zip
+		COMMAND ${CMAKE_COMMAND} -E tar "cfv" "$ENV{ARCHIVE_NAME}.zip" --format=zip
 			"${PROJECT_BINARY_DIR}/Open-FVS"
 		)
