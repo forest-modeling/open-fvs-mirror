@@ -13,7 +13,7 @@ message(STATUS "FVSvariant = ${variant_name}")
 
 set (CMAKE_Fortran_Format FIXED)
 set (CMAKE_VERBOSE_MAKEFILE ON)
-# set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+set (CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 ## TODO: May need to include flags for VS/Intel compilers
 # if (CMAKE_GENERATOR MATCHES "Visual Studio 10")
@@ -24,7 +24,7 @@ set (CMAKE_VERBOSE_MAKEFILE ON)
 add_definitions(-DANSI)
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
-	add_definitions(-DWINDOWS -D_WINDLL)
+	add_definitions(-DWINDOWS -D_WINDLL -DMS_WIN64)
 endif ()
 
 message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
@@ -40,6 +40,9 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
   # using Visual Studio C++
 endif()
+
+set(CMAKE_C_FLAGS "-DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION ${CMAKE_C_FLAGS}")
+set(CMAKE_Fortran_FLAGS_Debug "-g -ffpe-trap=zero,invalid,overflow,underflow ${CMAKE_Fortran_FLAGS_Debug}")
 
 set (include_dirs)
 set (fvs_src)
