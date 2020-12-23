@@ -42,7 +42,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 endif()
 
 set(CMAKE_C_FLAGS "-DSQLITE_THREADSAFE=0 -DSQLITE_OMIT_LOAD_EXTENSION ${CMAKE_C_FLAGS}")
-set(CMAKE_Fortran_FLAGS_Debug "-g -ffpe-trap=zero,invalid,overflow,underflow ${CMAKE_Fortran_FLAGS_Debug}")
+set(CMAKE_Fortran_FLAGS_Debug "-g -Wall -Wno-integer-division -ffpe-trap=invalid,zero,underflow,overflow,denormal -fbacktrace  ${CMAKE_Fortran_FLAGS_Debug}")
+set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--export-all-symbols ${CMAKE_SHARED_LINKER_FLAGS}")
 
 set (include_dirs)
 set (fvs_src)
@@ -89,7 +90,9 @@ add_library(lib${variant_name} SHARED $<TARGET_OBJECTS:OBJS_${variant_name}>)
 add_library(lib${variant_name}_static STATIC $<TARGET_OBJECTS:OBJS_${variant_name}>)
 
 add_executable (${variant_name} ${main_src})
-target_link_libraries(${variant_name} lib${variant_name}_static)
+add_executable (${variant_name} ${main_src} $<TARGET_OBJECTS:OBJS_${variant_name}>)
+# target_link_libraries(${variant_name} lib${variant_name}_static)
+# target_link_libraries(${variant_name} lib${variant_name})
 
 if (CMAKE_SYSTEM_NAME MATCHES "Windows")
     set (flags "-static")
