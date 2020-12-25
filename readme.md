@@ -5,7 +5,7 @@ unnofficial integration continuous integration features.
 
 # CI Builds
 ## [Trunk Mirror](https://sourceforge.net/p/open-fvs/code/HEAD/tree/trunk/)
-[![Build status](https://ci.appveyor.com/api/projects/status/eyyqq4a57xk0ttt0/branch/trunk?svg=true)](https://ci.appveyor.com/project/tharen/open-fvs-mirror/branch/trunk)
+[![Build status](https://ci.appveyor.com/api/projects/status/eyyqq4a57xk0ttt0/branch/trunk?svg=true)](https://ci.appveyor.com/project/tharen/open-fvs-mirror/branch/trunk-ci)
 
 A nightly build is triggered on AppVeyor to syncronize
 commits in SVN and perform the default build.
