@@ -83,7 +83,8 @@ environment:
     secure: 86uUkYvxMTzebFONUvAK7QYDRMxZW8Nl9LVmIW/gBKGy2mQZAT9cV3QcLFktiSng
   github_user: tharen
   CMAKE_BUILD_TYPE: Release
-  ARCHIVE_NAME: open-fvs-%FVS_VARIANT%-%APPVEYOR_REPO_BRANCH%-r%SVN_REV%-w64
+  BRANCH_TAG: r%SVN_REV%-%APPVEYOR_REPO_BRANCH:-ci=%
+  ARCHIVE_NAME: open-fvs-%FVS_VARIANT%-%BRANCH_TAG%-w64
   MINICONDA: C:\Miniconda3
   matrix:
   - FVS_VARIANT: wc
@@ -193,7 +194,7 @@ artifacts:
 
 deploy:
 - provider: GitHub
-  tag: svn-r%SVN_REV%-%APPVEYOR_REPO_BRANCH%
+  tag: svn-%BRANCH_TAG%
   description: 'This is an automated [AppVeyor CI](https://ci.appveyor.com/project/tharen/builds/%APPVEYOR_BUILD_VERSION%) build of a commit to [SVN](https://sourceforge.net/p/open-fvs/code/).\n\nNOTE: This is an unofficial and unsupported Open-FVS build. Official supported releases of FVS can be obtained [here](https://www.fs.fed.us/fvs/software/complete.php).'
   auth_token:
     secure: 86uUkYvxMTzebFONUvAK7QYDRMxZW8Nl9LVmIW/gBKGy2mQZAT9cV3QcLFktiSng
