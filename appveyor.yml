@@ -97,14 +97,19 @@ environment:
 install:
 - cmd: >-
     REM Download the MinGW compiler
+    
     curl -o mingw.7z https://managedway.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
+    
     7z.exe x mingw.7z
+    
     set MINGW_PATH=%CD%\mingw64
 
     set PATH=%MINGW_PATH%\bin;%PATH%
     
     set PATH=%MINICONDA%;%MINICONDA%\Scripts;%PATH%
+    
     call activate base
+    
     pip install cmake ninja
     
     REM conda create -y -c conda-forge -n fvs -python=3.8 cmake ninja
@@ -123,6 +128,7 @@ build_script:
     set /p SVN_REV=<bar
     
     set BRANCH_TAG=%APPVEYOR_REPO_BRANCH:-ci=%-r%SVN_REV%
+    
     echo BRANCH_TAG: %BRANCH_TAG%
 
     REM ************
@@ -132,16 +138,21 @@ build_script:
     REM ************
 
     gcc -v
+    
     where python
+    
     where cmake
+    
     where ninja
 
     mkdir build
 
     cmake -S . -B build -G "Ninja" -DFVS_VARIANTS=%FVS_VARIANT% -DCMAKE_BUILD_TYPE=Release
+    
     cmake --build build
 
     REM Create the zipfile artifact
+    
     cmake --build build --target zip
 
     REM powershell.exe $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
@@ -163,15 +174,20 @@ test_script:
     echo %kwd%
     
     REM Execute the test keyword file
+    
     %fvs% --keywordfile=%kwd% > test.log 2>&1 & exit 0
+    
     set vn=%FVS_VARIANT:~0,2%
     
     REM Extract just the values table without headers, etc
+    
     grep -v "\-999" %vn%t01.sum      > %vn%t01.tmp
+    
     grep -v "\-999" %vn%t01.sum.save > %vn%t01.tmp.save
     
     REM Compare the new and published values
     REM diff -w %vn%t01.tmp %vn%t01.tmp.save & exit 0
+    
     diff -w %vn%t01.tmp %vn%t01.tmp.save
 
 artifacts:
