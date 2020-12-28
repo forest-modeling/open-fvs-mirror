@@ -1,7 +1,11 @@
 # Open-FVS Mirror
 
 This is a mirror of the official Open-FVS code. This is an unofficial 
+mirror provided as a convenience to the FVS user community. Compiled
+binaries are provided as-is.
 
+Users are referred to the USFS [website](https://www.fs.fed.us/fvs/) 
+for supported versions of FVS.
 
 The mirror was created using Git-SVN. Currently this is intended to be
 a one-way copy of the SVN repository. Upstream contributions can be
