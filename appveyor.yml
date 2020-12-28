@@ -1,5 +1,5 @@
 version: '{branch}.{build}'
-image: Visual Studio 2019
+image: Visual Studio 2017
 # clone_script:
 # - cmd: >-
     # REM choco install git
@@ -77,6 +77,7 @@ image: Visual Studio 2019
     # git push temp %APPVEYOR_REPO_BRANCH%
     
 environment:
+  MINGW_PATH: C:\mingw-w64\x86_64-7.2.0-posix-seh-rt_v5-rev1\mingw64
   CMAKE_BUILD_TYPE: Release
   ARCHIVE_NAME: open-fvs_%FVS_VARIANT%_%BRANCH_TAG%_w64
   MINICONDA: C:\Miniconda3
@@ -96,14 +97,7 @@ environment:
   
 install:
 - cmd: >-
-    REM Download the MinGW compiler
     
-    curl -o mingw.7z https://managedway.dl.sourceforge.net/project/mingw-w64/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/8.1.0/threads-posix/seh/x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z
-    
-    7z.exe x mingw.7z
-    
-    set MINGW_PATH=%CD%\mingw64
-
     set PATH=%MINGW_PATH%\bin;%PATH%
     
     set PATH=%MINICONDA%;%MINICONDA%\Scripts;%PATH%
