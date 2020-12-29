@@ -9,8 +9,8 @@ for supported versions of FVS.
 SVN - [FMSCdev][dev_svn]
 
 GitHub - 
-[FMSCdev](https://github.com/forest-modeling/open-fvs-mirror/tree/FMSCdev)
-([FMSCdev-ci](https://github.com/forest-modeling/open-fvs-mirror/tree/FMSCdev-ci))
+[FMSCdev][dev_git]
+([FMSCdev-ci][dev-ci_git])
 
 # CI Builds
 Continuos integration builds are performed as new commits are added 
@@ -22,5 +22,7 @@ Successful builds are tagged and binary artifacts are uploaded to GitHub release
 | ------ | :------: | :-------: |
 |[FMSCdev][dev_svn]|[![Build status](https://ci.appveyor.com/api/projects/status/ww7ygykde0kdly3c/branch/FMSCdev-ci?svg=true)][dev_appveyor]||
 
-[dev_svn]: https://sourceforge.net/p/open-fvs/code/HEAD/tree/FMSCdev/
+[dev_git]: https://github.com/forest-modeling/open-fvs-mirror/tree/FMSCdev
+[dev-ci_git]: https://github.com/forest-modeling/open-fvs-mirror/tree/FMSCdev-ci
+[dev_svn]: https://sourceforge.net/p/open-fvs/code/HEAD/tree/branches/FMSCdev/
 [dev_appveyor]: https://ci.appveyor.com/project/tharen/open-fvs-mirror/branch/FMSCdev-ci
