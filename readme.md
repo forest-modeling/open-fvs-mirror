@@ -19,7 +19,6 @@ can generally be added on request.
  - [trunk](trunk_svn)
  - [FMSCrelease](release_svn)
  - [FMSCdev](dev_svn)
- - [PyFVS](pyfvs_svn)
 
 # CI Builds
 Continuos integration builds are performed as new commits are added 
@@ -32,7 +31,6 @@ to GitHub releases. Each mirrored branch is tracked by a companion '-ci' branch.
 |[trunk][trunk_git]|[![Build status](https://ci.appveyor.com/api/projects/status/eyyqq4a57xk0ttt0/branch/trunk-ci?svg=true)][trunk_appveyor]||
 |[FMSCrelease][release_git]|[![Build status](https://ci.appveyor.com/api/projects/status/eyyqq4a57xk0ttt0/branch/FMSCrelease-ci?svg=true)][release_appveyor]||
 |[FMSCdev][dev_git]|[![Build status](https://ci.appveyor.com/api/projects/status/eyyqq4a57xk0ttt0/branch/FMSCdev-ci?svg=true)][dev_appveyor]||
-|[PyFVS][pyfvs_git]|[![Build status](https://ci.appveyor.com/api/projects/status/eyyqq4a57xk0ttt0/branch/PyFVS-ci?svg=true)][pyfvs_appveyor]||
 
 [trunk_git]: https://github.com/forest-modeling/open-fvs-mirror/tree/trunk
 [trunk_svn]: https://sourceforge.net/p/open-fvs/code/HEAD/tree/trunk/
